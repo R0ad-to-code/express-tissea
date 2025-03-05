@@ -48,10 +48,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       setIsLoading(true);
       const data = await api.login(username, password);
-      
       const userData = {
         id: data.id || 'user-id',
-        username,
+        username: data.email,
         token: data.token,
         admin: data.admin
       };

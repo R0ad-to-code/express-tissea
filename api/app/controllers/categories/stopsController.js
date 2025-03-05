@@ -12,11 +12,6 @@ const getStop = async (req, res) => {
     }
 };
 
-
-
-
-
-
 module.exports = {
     getStop
 };

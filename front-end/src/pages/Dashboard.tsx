@@ -57,7 +57,6 @@ const Dashboard = () => {
           const categoryLines = await api.getLinesByCategory(category.id);
           linesData[category.id] = categoryLines;
         }
-        console.log(linesData)
         setLines(linesData);
       } catch (error) {
         console.error("Failed to fetch data", error);

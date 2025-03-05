@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Category = require('./models/categoryModel');
 const Line = require('./models/lineModel');
 const Stop = require('./models/stopModel');
+const User = require('./models/userModel');
 require('dotenv').config();
 
 const MONGO_URI = process.env.MONGO_URI;
@@ -15,6 +16,7 @@ const seedDatabase = async () => {
         await Category.deleteMany({});
         await Line.deleteMany({});
         await Stop.deleteMany({});
+        await User.deleteMany({});
 
         // 📌 Catégories de transport (Bus, Tramway, Métro)
         const categories = await Category.insertMany([

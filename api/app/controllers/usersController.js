@@ -44,11 +44,15 @@ const login = async (req, res) => {
 
         if (!user || !(await bcrypt.compare(password, user.password))) {
             return res.status(400).json({ message: "Identifiants invalides" });
-        }
-
-        // Génération du token JWT
+        } 
         const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '24h' });
-        res.json({ token });
+        const formattedUser = {
+            id: user._id,
+            email : user.email,
+            admin: user.admin,
+            token
+        }
+        res.json(formattedUser);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

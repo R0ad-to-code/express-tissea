@@ -14,7 +14,7 @@ import {Line, Stop} from "./Dashboard"
 import { useAuth } from "@/components/Auth";
 
 const LineDetail = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAdmin } = useAuth();
   const { categoryId, lineId } = useParams<{ categoryId: string; lineId: string }>();
   const [line, setLine] = useState<Line | null>(null);
   const [stops, setStops] = useState<Stop[]>([]);
@@ -25,10 +25,10 @@ const LineDetail = () => {
   const [newOrder, setNewOrder] = useState(0);
   const [newLat, setNewLat] =  useState("43°37'13.6");
   const [newLong, setNewLong] =  useState("1°26'09.2");
-  const [isEditing, setIsEditing] = useState(false); // State for edit mode
-  const [editableName, setEditableName] = useState(""); // Editable name
-  const [editableStart, setEditableStart] = useState(""); // Editable start time
-  const [editableEnd, setEditableEnd] = useState(""); // Editable end time
+  const [isEditing, setIsEditing] = useState(false);
+  const [editableName, setEditableName] = useState(""); 
+  const [editableStart, setEditableStart] = useState("");
+  const [editableEnd, setEditableEnd] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,9 +36,9 @@ const LineDetail = () => {
       try {
         const lineData = await api.getLineDetails(categoryId, lineId);
         setLine(lineData);
-        setEditableName(lineData.name); // Set initial editable name
-        setEditableStart(lineData.debut_activite); // Set initial start time
-        setEditableEnd(lineData.fin_activite); // Set initial end time
+        setEditableName(lineData.name); 
+        setEditableStart(lineData.debut_activite); 
+        setEditableEnd(lineData.fin_activite); 
         setStops(lineData.stops);
         const distanceData = await api.getLineDistance(lineId);
         setDistance(distanceData.distance);
@@ -170,6 +170,7 @@ const LineDetail = () => {
                 Retour
               </Link>
             </Button>
+            {isAdmin && (
             <Button
                     variant="ghost"
                     onClick={handleEditToggle}
@@ -177,6 +178,7 @@ const LineDetail = () => {
                   >
                     {isEditing ? "Save" : "Edit"}
             </Button>
+            )}  
             {loading ? (
               <div className="h-16 w-full animate-pulse rounded-md bg-muted"></div>
             ) : line ? (
@@ -198,8 +200,9 @@ const LineDetail = () => {
                               className="text-3xl font-bold bg-transparent border-none outline-none"
                             />
                           ) : (
-                            line.name
-                          )}                        <p className="opacity-80">
+                            <p className="text-3xl font-bold bg-transparent border-none outline-none">{line.name}</p>
+                          )}  
+                        <p className="opacity-80">
                           {stops.length} arrêts • {distance ? `${distance} km` : "Distance inconnue"}
                         </p>
                       </div>
@@ -341,7 +344,7 @@ const LineDetail = () => {
                   className="glass-card p-6"
                 >
                 <h3 className="text-xl font-semibold mb-4">Liste des arrêts</h3>
-                  {isAuthenticated && (
+                  {isAdmin && (
                       <div className="my-4">
                       <Button onClick={toggleForm} variant={showForm ? "destructive" : "default"}>
                         {showForm ? "Annuler" : "Ajouter un arrêt"}
@@ -407,7 +410,7 @@ const LineDetail = () => {
                                 {index === 0 ? "Départ" : index === stops.length - 1 ? "Terminus" : `Arrêt ${index + 1}`}
                               </div>
                             </div>
-                            {isAuthenticated && (
+                            {isAdmin && (
                               <button
                                 onClick={() => deleteStop(stop.id)}
                                 className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-700"
