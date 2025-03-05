@@ -10,8 +10,6 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
         console.error('Invalid latitude or longitude');
         return 0; // Retourne 0 si l'un des paramètres est invalide
     }
-
-    // Si une latitude ou longitude est manquante, on la remplace par 0
     lat1 = lat1 || 0;
     lon1 = lon1 || 0;
     lat2 = lat2 || 0;

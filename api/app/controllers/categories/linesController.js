@@ -37,13 +37,31 @@ const getLineDetails = async (req, res) => {
 
 // ✅ PUT - Modifier une ligne
 const updateLine = async (req, res) => {
+    const { name, debut_activite, fin_activite } = req.body; // Ne garder que les champs nécessaires à la mise à jour
+    if (!name || !debut_activite || !fin_activite) {
+        return res.status(400).json({ message: 'Missing required fields' });
+    }
+
     try {
-        const updatedLine = await Line.findByIdAndUpdate(req.params.lineId, req.body, { new: true });
-        res.json(updatedLine);
+        const line = await Line.findById(req.params.lineId);
+        if (!line) {
+            return res.status(404).json({ message: 'Line not found' });
+        }
+
+        line.name = name || line.name;
+        line.debut_activite = debut_activite || line.debut_activite;
+        line.fin_activite = fin_activite || line.fin_activite;
+
+        // Sauvegarder la ligne mise à jour
+        await line.save();
+
+        res.json(line); // Retourner la ligne mise à jour
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
+
+
 
 // GET - Liste détaillée des arrêts d'une ligne
 const getStopsByLine = async (req, res) => {
@@ -86,13 +104,13 @@ const addStopToLine = async (req, res) => {
             });
         }
 
-        const newStop = new Stop({ 
+        let newStop = new Stop({ 
             name, 
             longitude, 
             latitude 
         });
-        await newStop.save();
-
+        newStop = await newStop.save();
+        console.log(newStop);
         line.stops.push({ _id: newStop._id, order });
         line.stops.sort((a, b) => a.order - b.order);
         // Sauvegarde la ligne avec le nouvel arrêt
@@ -104,7 +122,6 @@ const addStopToLine = async (req, res) => {
 };
 
 
-// ✅ DELETE - Supprimer un arrêt d'une ligne
 // ✅ DELETE - Supprimer un arrêt d'une ligne
 const deleteStopFromLine = async (req, res) => {
     try {

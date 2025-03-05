@@ -13,13 +13,7 @@ const userSchema = new mongoose.Schema({
     admin: {
         type: Boolean,
         required: [true, 'Précisez si admin ou non']
-    },
-    stops: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Stop'
-        }
-    ]
+    }
 });
 
 module.exports = mongoose.model('User', userSchema);
